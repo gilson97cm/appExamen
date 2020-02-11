@@ -109,11 +109,17 @@ public class Modificar extends AppCompatActivity implements View.OnClickListener
             registro.put("detalle", detalle);
             registro.put("total", total);
             registro.put("tipo", tipo);
+            
+            Integer t = Integer.parseInt(txtTypeEdit.getText().toString());
+            if(t !=7){
+                baseDatos.update("pedidos", registro, "codigo = '"+codigo_+"'" , null);
+                baseDatos.close();
+                Toast.makeText(this, "Se actualizo un pedido", Toast.LENGTH_SHORT).show();
+            }else {
+                Toast.makeText(this, "el tipo tiene que ser diferente de 7", Toast.LENGTH_SHORT).show();
+            }
 
-            baseDatos.update("pedidos", registro, "codigo = '"+codigo_+"'" , null);
-            baseDatos.close();
-
-            Toast.makeText(this, "Se actualizo un pedido", Toast.LENGTH_SHORT).show();
+          
         } else {
             Toast.makeText(this, "Hay campos vacios.", Toast.LENGTH_SHORT).show();
         }
@@ -128,9 +134,19 @@ public class Modificar extends AppCompatActivity implements View.OnClickListener
             if(fila.getCount() <=0){
                 Toast.makeText(this, "Nada para eliminar.", Toast.LENGTH_SHORT).show();
             }else {
-                baseDatos.delete("pedidos","codigo = '"+codigo_+"' ",null);
-                baseDatos.close();
-                Toast.makeText(this, "Se elimino.", Toast.LENGTH_SHORT).show();
+                //validar si es menor a 1000 se elimina
+                //capturamos el valor del campo total y transformamos a enterp
+                Integer t = Integer.parseInt(txtTotalEdit.getText().toString());
+                //validamos
+                if(t < 1000){
+                    baseDatos.delete("pedidos","codigo = '"+codigo_+"' ",null);
+                    baseDatos.close();
+                    Toast.makeText(this, "Se elimino.", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(this, "el total debe ser menor a 1000", Toast.LENGTH_SHORT).show();
+                }
+
+
             }
         }else{
             Toast.makeText(this, "Nada para eliminar.", Toast.LENGTH_SHORT).show();
