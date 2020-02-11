@@ -25,6 +25,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button btnRegister;
     Button btnList;
 
+    Button btnSearch;
+    Button btnTotal;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,23 +50,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnRegister.setOnClickListener(this);
         btnList.setOnClickListener(this);
 
+        btnSearch = (Button) findViewById(R.id.btnSearch);
+        btnTotal = (Button) findViewById(R.id.btnTotal);
+
+        btnSearch.setOnClickListener(this);
+        btnTotal.setOnClickListener(this);
+
 
     }
 
     // INICIO FUNCION ONCLICK
     @Override
     public void onClick(View v) {
+        //creas variables y tomas el valor de cada campo de texto
+        //para guardar en las variables
+        String codigo_ = txtCode.getText().toString();
+        String detalle = txtDetail.getText().toString();
+        String total = txtTotal.getText().toString();
+        String tipo = txtType.getText().toString();
+
+        Intent intent = null;
         //se utiliza un SWITCH porque en la vista AGREGAR hay mas de dos botones
         switch (v.getId()){
             //el case es para validar que boton se presiona
             case R.id.btnRegister:
-                //creas variables y tomas el valor de cada campo de texto
-                //para guardar en las variables
-                String codigo = txtCode.getText().toString();
-                String detalle = txtDetail.getText().toString();
-                String total = txtTotal.getText().toString();
-                String tipo = txtType.getText().toString();
-
                 // validas si los campos etan vacios
                 //esta el signo "!" antes de cada validacion para negar y se lee asi:
                 //SI CODIGO NO ESTA VACIO inserta los datos
@@ -73,10 +83,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //no te vayas a confundir
                 // cuando esta el signo antes de la validacion (--> !codigo.isEmpty() ) la funcion "insert" va dentro del "if"
                 //cuando la validacion esta sin signo (--> codigo.isEmpty() ) la funcion "insert" va en el "else"
-                if(!codigo.isEmpty() || !detalle.isEmpty() || !total.isEmpty() || !tipo.isEmpty()){
+                if(!codigo_.isEmpty() || !detalle.isEmpty() || !total.isEmpty() || !tipo.isEmpty()){
                     //si todos loc ampos estan llenos
                     //se ejecuta la funcion "insert"
-                    insert(codigo,detalle,total,tipo);
+                    insert(codigo_,detalle,total,tipo);
                 }else{
                     //si algun campo esta vacio se muestra un mensaje
                     Toast.makeText(this, "Hay campos vacios.", Toast.LENGTH_SHORT).show();
@@ -85,9 +95,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btnList:
                 //creas un intent para ir a la vista de las listas
                 //el "this" hace refrencia a la clase donde te encuentras en este caso a "MainActivitiy"
-                Intent intent = new Intent(this, ListaPedidos.class);
+                intent = new Intent(this, ListaPedidos.class);
                 startActivity(intent);
                 break;
+            case R.id.btnSearch:
+                search(codigo_);
+                break;
+            case R.id.btnTotal:
+                intent = new Intent(this, TotalPedidos.class);
+                break;
+        }
+        if (intent != null){
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
         }
     }
     //FIN FUNCION ONCLICK
@@ -119,5 +139,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             Toast.makeText(this, "Hay campos vacios.", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    //funcion buscar
+    public void search (String codigo){
+        Connection db = new Connection(this, "bddemo", null, 1);
+        SQLiteDatabase baseDatos = db.getWritableDatabase();
+
+
+        if (!codigo.isEmpty()) {
+            Cursor fila = baseDatos.rawQuery("SELECT * FROM pedidos WHERE codigo = '"+codigo+"' ", null);
+
+            if (fila.moveToFirst()) {
+                txtDetail.setText(fila.getString(1));
+                txtTotal.setText(fila.getString(2));
+                txtType.setText(fila.getString(3));
+            } else {
+                Toast.makeText(this, "No hay registro.", Toast.LENGTH_SHORT).show();
+            }
+            baseDatos.close();
+        } else {
+            Toast.makeText(this, "Nada para buscar.", Toast.LENGTH_SHORT).show();
+        }
+
     }
 }
