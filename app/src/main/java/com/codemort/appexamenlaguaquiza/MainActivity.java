@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     Button btnSearch;
     Button btnTotal;
+    Button btnCant;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,8 +54,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnSearch = (Button) findViewById(R.id.btnSearch);
         btnTotal = (Button) findViewById(R.id.btnTotal);
 
+        btnCant = (Button) findViewById(R.id.btnCant);
+
         btnSearch.setOnClickListener(this);
         btnTotal.setOnClickListener(this);
+        btnCant.setOnClickListener(this);
 
 
     }
@@ -103,6 +107,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btnTotal:
                 intent = new Intent(this, SumaPedidos.class);
+                break;
+            case R.id.btnCant:
+                intent = new Intent(this, CantidadPedidos.class);
                 break;
         }
         if (intent != null){
