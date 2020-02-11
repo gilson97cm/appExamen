@@ -14,9 +14,7 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-   //instancia de las vistas (txtCode,txtDetail,ect. Son los
-   // id de los campos de la vista, para que no te confundas
-   // utiliza los mismos nombres en las vistas y en estas variables)
+
     EditText txtCode;
     EditText txtDetail;
     EditText txtTotal;
@@ -26,16 +24,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button btnList;
 
     Button btnSearch;
-    Button btnTotal;
-    Button btnCant;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //relacionamos las variables declaradas arriba con las vistas
-        //variable de arriba                    //id de las vistas
+
         txtCode = (EditText) findViewById(R.id.txtCode);
         txtDetail = (EditText) findViewById(R.id.txtDetail);
         txtTotal = (EditText) findViewById(R.id.txtTotal);
@@ -44,21 +39,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnRegister = (Button) findViewById(R.id.btnRegister);
         btnList = (Button) findViewById(R.id.btnList);
 
-        //se agregaa el evento click a los botones
-        // si te fijas arriba en el nombre de la clase despues de "AppCompatActivity"
-        // se aumenta "implements View.OnClickListener"
-        //y se crea la funcion ONCLICK
         btnRegister.setOnClickListener(this);
         btnList.setOnClickListener(this);
 
         btnSearch = (Button) findViewById(R.id.btnSearch);
-        btnTotal = (Button) findViewById(R.id.btnTotal);
 
-        btnCant = (Button) findViewById(R.id.btnCant);
 
         btnSearch.setOnClickListener(this);
-        btnTotal.setOnClickListener(this);
-        btnCant.setOnClickListener(this);
 
 
     }
@@ -66,50 +53,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     // INICIO FUNCION ONCLICK
     @Override
     public void onClick(View v) {
-        //creas variables y tomas el valor de cada campo de texto
-        //para guardar en las variables
+
         String codigo_ = txtCode.getText().toString();
         String detalle = txtDetail.getText().toString();
         String total = txtTotal.getText().toString();
         String tipo = txtType.getText().toString();
 
         Intent intent = null;
-        //se utiliza un SWITCH porque en la vista AGREGAR hay mas de dos botones
         switch (v.getId()){
-            //el case es para validar que boton se presiona
             case R.id.btnRegister:
-                // validas si los campos etan vacios
-                //esta el signo "!" antes de cada validacion para negar y se lee asi:
-                //SI CODIGO NO ESTA VACIO inserta los datos
-                //si no estuviese el signo "!" se leeria asi
-                //SI CODIGO ESTA VACIO no inserta los datos
-
-                //no te vayas a confundir
-                // cuando esta el signo antes de la validacion (--> !codigo.isEmpty() ) la funcion "insert" va dentro del "if"
-                //cuando la validacion esta sin signo (--> codigo.isEmpty() ) la funcion "insert" va en el "else"
                 if(!codigo_.isEmpty() || !detalle.isEmpty() || !total.isEmpty() || !tipo.isEmpty()){
-                    //si todos loc ampos estan llenos
-                    //se ejecuta la funcion "insert"
                     insert(codigo_,detalle,total,tipo);
                 }else{
-                    //si algun campo esta vacio se muestra un mensaje
                     Toast.makeText(this, "Hay campos vacios.", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.btnList:
-                //creas un intent para ir a la vista de las listas
-                //el "this" hace refrencia a la clase donde te encuentras en este caso a "MainActivitiy"
                 intent = new Intent(this, ListaPedidos.class);
                 startActivity(intent);
                 break;
             case R.id.btnSearch:
                 search(codigo_);
-                break;
-            case R.id.btnTotal:
-                intent = new Intent(this, SumaPedidos.class);
-                break;
-            case R.id.btnCant:
-                intent = new Intent(this, CantidadPedidos.class);
                 break;
         }
         if (intent != null){
