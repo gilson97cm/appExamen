@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 search(codigo_);
                 break;
             case R.id.btnTotal:
-                intent = new Intent(this, TotalPedidos.class);
+                intent = new Intent(this, SumaPedidos.class);
                 break;
         }
         if (intent != null){
@@ -132,6 +132,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 baseDatos.insert("pedidos", null, registro);
                 baseDatos.close();
+
+                //limpiar los campos despues de registrar
+                txtCode.setText("");
+                txtDetail.setText("");
+                txtTotal.setText("");
+                txtType.setText("");
                 Toast.makeText(this, "Se registro un pedido", Toast.LENGTH_SHORT).show();
             }else {
                 Toast.makeText(this, "el código ya existe", Toast.LENGTH_SHORT).show();

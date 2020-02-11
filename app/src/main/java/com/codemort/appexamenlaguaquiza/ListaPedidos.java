@@ -57,6 +57,7 @@ public class ListaPedidos extends AppCompatActivity {
                 intent.putExtra("tipo", tipo);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
+                finish();
             }
         });
 
