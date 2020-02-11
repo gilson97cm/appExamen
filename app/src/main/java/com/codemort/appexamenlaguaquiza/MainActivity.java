@@ -2,10 +2,15 @@ package com.codemort.appexamenlaguaquiza;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ContentValues;
+import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -52,10 +57,67 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()){
             //el case es para validar que boton se presiona
             case R.id.btnRegister:
+                //creas variables y tomas el valor de cada campo de texto
+                //para guardar en las variables
+                String codigo = txtCode.getText().toString();
+                String detalle = txtDetail.getText().toString();
+                String total = txtTotal.getText().toString();
+                String tipo = txtType.getText().toString();
+
+                // validas si los campos etan vacios
+                //esta el signo "!" antes de cada validacion para negar y se lee asi:
+                //SI CODIGO NO ESTA VACIO inserta los datos
+                //si no estuviese el signo "!" se leeria asi
+                //SI CODIGO ESTA VACIO no inserta los datos
+
+                //no te vayas a confundir
+                // cuando esta el signo antes de la validacion (--> !codigo.isEmpty() ) la funcion "insert" va dentro del "if"
+                //cuando la validacion esta sin signo (--> codigo.isEmpty() ) la funcion "insert" va en el "else"
+                if(!codigo.isEmpty() || !detalle.isEmpty() || !total.isEmpty() || !tipo.isEmpty()){
+                    //si todos loc ampos estan llenos
+                    //se ejecuta la funcion "insert"
+                    insert(codigo,detalle,total,tipo);
+                }else{
+                    //si algun campo esta vacio se muestra un mensaje
+                    Toast.makeText(this, "Hay campos vacios.", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.btnList:
+                //creas un intent para ir a la vista de las listas
+                //el "this" hace refrencia a la clase donde te encuentras en este caso a "MainActivitiy"
+                Intent intent = new Intent(this, ListaPedidos.class);
+                startActivity(intent);
                 break;
         }
     }
     //FIN FUNCION ONCLICK
+
+
+    public void insert (String codigo, String detalle, String total,String tipo){
+        Connection db = new Connection(this, "bddemo", null, 1);
+        SQLiteDatabase baseDatos = db.getWritableDatabase();
+
+
+        if ((!codigo.isEmpty()) && (!detalle.isEmpty()) && (!total.isEmpty()) && (!tipo.isEmpty()) ) {
+
+            ContentValues registro = new ContentValues();
+
+            Cursor fila = baseDatos.rawQuery("SELECT * FROM pedidos WHERE codigo = '"+codigo+"'", null);
+
+            if (fila.getCount() <= 0){
+                registro.put("codigo", codigo);
+                registro.put("detalle", detalle);
+                registro.put("total", total);
+                registro.put("tipo", tipo);
+
+                baseDatos.insert("pedidos", null, registro);
+                baseDatos.close();
+                Toast.makeText(this, "Se registro un pedido", Toast.LENGTH_SHORT).show();
+            }else {
+                Toast.makeText(this, "el código ya existe", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(this, "Hay campos vacios.", Toast.LENGTH_SHORT).show();
+        }
+    }
 }
